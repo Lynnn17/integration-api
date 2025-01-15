@@ -4,6 +4,7 @@ const ItemForm = ({ newItem, setNewItem, handleAddItem }) => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-4">
         <input
           type="text"
+          required
           value={newItem.name}
           onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
           className="border p-2 rounded-md w-full sm:w-1/3"
@@ -11,6 +12,7 @@ const ItemForm = ({ newItem, setNewItem, handleAddItem }) => {
         />
         <input
           type="text"
+          required
           value={newItem.description}
           onChange={(e) =>
             setNewItem({ ...newItem, description: e.target.value })

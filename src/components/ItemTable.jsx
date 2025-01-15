@@ -37,6 +37,7 @@ const ItemTable = ({
                 {editItem?.id === item.id ? (
                   <input
                     type="text"
+                    required
                     value={editItem.name}
                     onChange={(e) =>
                       setEditItem({ ...editItem, name: e.target.value })
@@ -51,6 +52,7 @@ const ItemTable = ({
                 {editItem?.id === item.id ? (
                   <input
                     type="text"
+                    required
                     value={editItem.description}
                     onChange={(e) =>
                       setEditItem({

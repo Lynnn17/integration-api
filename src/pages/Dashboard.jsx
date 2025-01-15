@@ -47,6 +47,7 @@ const Dashboard = () => {
     setNewItem({ name: "", description: "" });
     const itemsFromDB = await getItems();
     setItems(itemsFromDB);
+    alert("Item added!");
   };
 
   // Mengedit data item
@@ -59,6 +60,7 @@ const Dashboard = () => {
     setEditItem(null);
     const itemsFromDB = await getItems();
     setItems(itemsFromDB);
+    alert("Item updated!");
   };
 
   // Menghapus item
@@ -66,6 +68,7 @@ const Dashboard = () => {
     await deleteItem(id);
     const itemsFromDB = await getItems();
     setItems(itemsFromDB);
+    alert("Item deleted!");
   };
 
   // Filter berdasarkan pencarian

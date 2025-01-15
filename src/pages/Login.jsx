@@ -21,8 +21,11 @@ const Login = () => {
       login(username, fullName); // Panggil fungsi login dari AuthContext
       navigate("/"); // Redirect ke halaman dashboard
       setLoading(false);
+      alert("Login successful!");
     } else {
       setError("Invalid username or password");
+      setLoading(false);
+      alert("Login failed!");
     }
   };
 

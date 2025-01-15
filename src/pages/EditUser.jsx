@@ -17,6 +17,7 @@ const EditUser = () => {
       </h1>
       <input
         type="text"
+        required
         value={name}
         onChange={(e) => setName(e.target.value)}
         className="w-full p-2 border rounded"

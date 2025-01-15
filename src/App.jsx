@@ -10,8 +10,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import EditUser from "./pages/EditUser";
 import NotFound from "./pages/NotFound";
+
 import { AuthContext } from "./context/AuthContext";
-import AuthProvider from "./context/AuthContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext";
 import Loading from "./components/Loading.jsx";
 
@@ -34,35 +34,34 @@ const App = () => {
   };
 
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <Router>
-          <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-            {user && <Navbar />}
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/edit-user"
-                element={
-                  <ProtectedRoute>
-                    <EditUser />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+          {user && <Navbar />}
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path={"/"}
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/edit-user"
+              element={
+                <ProtectedRoute>
+                  <EditUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 };
 

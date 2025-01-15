@@ -1,11 +1,9 @@
 import { createContext, useState, useEffect } from "react";
-
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
@@ -28,7 +26,9 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+
     localStorage.removeItem("user");
+    window.location.reload();
   };
 
   return (

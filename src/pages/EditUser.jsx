@@ -12,7 +12,9 @@ const EditUser = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold">Edit Profile</h1>
+      <h1 className="text-2xl font-bold dark:text-white text-black">
+        Edit Profile
+      </h1>
       <input
         type="text"
         value={name}

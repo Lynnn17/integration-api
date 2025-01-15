@@ -1,5 +1,3 @@
-import React from "react";
-
 const ItemTable = ({
   currentItems,
   editItem,
@@ -7,6 +5,15 @@ const ItemTable = ({
   handleEditItem,
   handleDeleteItem,
 }) => {
+  const confirmDelete = (id) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this item?"
+    );
+    if (isConfirmed) {
+      handleDeleteItem(id); // Proceed to delete if user confirms
+    }
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-md">
@@ -74,7 +81,7 @@ const ItemTable = ({
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDeleteItem(item.id)}
+                      onClick={() => confirmDelete(item.id)} // Trigger confirmDelete function
                       className="bg-red-500 text-white p-2 rounded-md"
                     >
                       Delete

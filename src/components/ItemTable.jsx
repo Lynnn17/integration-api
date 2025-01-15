@@ -10,7 +10,7 @@ const ItemTable = ({
       "Are you sure you want to delete this item?"
     );
     if (isConfirmed) {
-      handleDeleteItem(id); // Proceed to delete if user confirms
+      handleDeleteItem(id);
     }
   };
 

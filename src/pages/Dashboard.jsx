@@ -14,14 +14,13 @@ const Dashboard = () => {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({ name: "", description: "" });
   const [editItem, setEditItem] = useState(null);
-  const [search, setSearch] = useState(""); // Untuk pencarian
-  const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
-  const [itemsPerPage] = useState(5); // Jumlah item per halaman
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Mengambil data dari IndexedDB saat komponen dimuat
   useEffect(() => {
     const fetchItems = async () => {
       const itemsFromDB = await getItems();
@@ -30,7 +29,6 @@ const Dashboard = () => {
     fetchItems();
   }, []);
 
-  // Membaca query string dari URL untuk memulihkan state
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const page = parseInt(params.get("page")) || 1;
@@ -40,7 +38,6 @@ const Dashboard = () => {
     setSearch(searchQuery);
   }, [location.search]);
 
-  // Menambahkan item baru
   const handleAddItem = async () => {
     if (!newItem.name || !newItem.description) return;
     await addItem(newItem);
@@ -50,7 +47,6 @@ const Dashboard = () => {
     alert("Item added!");
   };
 
-  // Mengedit data item
   const handleEditItem = async (id) => {
     if (!editItem) return;
     await updateItem(id, {
@@ -63,7 +59,6 @@ const Dashboard = () => {
     alert("Item updated!");
   };
 
-  // Menghapus item
   const handleDeleteItem = async (id) => {
     await deleteItem(id);
     const itemsFromDB = await getItems();
@@ -71,37 +66,28 @@ const Dashboard = () => {
     alert("Item deleted!");
   };
 
-  // Filter berdasarkan pencarian
   const filteredItems = items.filter(
     (item) =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.description.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Paginasi: menentukan item yang ditampilkan pada halaman saat ini
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Menghitung jumlah halaman
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-  // Fungsi untuk mengganti halaman
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Memperbarui query string di URL
     navigate({
       search: `?page=${pageNumber}&search=${search}`,
     });
   };
 
-  // Fungsi untuk menangani perubahan pencarian
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearch(query);
-    setCurrentPage(1); // Reset ke halaman pertama saat pencarian berubah
-
-    // Memperbarui query string di URL
+    setCurrentPage(1);
     navigate({
       search: `?page=1&search=${query}`,
     });
@@ -113,14 +99,12 @@ const Dashboard = () => {
         CRUD Data
       </h1>
 
-      {/* Form untuk menambah item */}
       <ItemForm
         newItem={newItem}
         setNewItem={setNewItem}
         handleAddItem={handleAddItem}
       />
 
-      {/* Pencarian */}
       <div className="mb-6 flex justify-end ">
         <div className="relative border border-gray-300 rounded-md w-full  md:w-1/4">
           <svg
@@ -146,8 +130,6 @@ const Dashboard = () => {
           />
         </div>
       </div>
-
-      {/* Tabel untuk menampilkan daftar item */}
       <ItemTable
         currentItems={currentItems}
         editItem={editItem}
@@ -155,8 +137,6 @@ const Dashboard = () => {
         handleEditItem={handleEditItem}
         handleDeleteItem={handleDeleteItem}
       />
-
-      {/* Paginasi */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

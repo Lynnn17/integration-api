@@ -18,8 +18,8 @@ const Login = () => {
     const fullName = "Administrator";
 
     if (username === validUsername && password === validPassword) {
-      login(username, fullName); // Panggil fungsi login dari AuthContext
-      navigate("/"); // Redirect ke halaman dashboard
+      login(username, fullName);
+      navigate("/");
       setLoading(false);
       alert("Login successful!");
     } else {

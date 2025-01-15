@@ -1,19 +1,18 @@
-import { createContext, useState, useEffect, useMemo } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Status loading
+  const [loading, setLoading] = useState(true);
 
-  // Only run this once when the component mounts
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
     }
     setLoading(false);
-  }, []); // Empty array means this effect runs once when the component mounts
+  }, []);
 
   const login = (name, fullName) => {
     const userData = { name, fullName };
@@ -29,7 +28,6 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-
     localStorage.removeItem("user");
   };
 

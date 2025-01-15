@@ -1,7 +1,6 @@
 const dbName = "dataDB";
 const storeName = "items";
 
-// Membuka IndexedDB
 const openDB = () => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(dbName, 1);

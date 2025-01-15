@@ -17,24 +17,19 @@ import Loading from "./components/Loading.jsx";
 
 const App = () => {
   const { user, loading: authLoading } = useContext(AuthContext);
-  const [loading, setLoading] = useState(true); // State untuk loading aplikasi
+  const [loading, setLoading] = useState(true);
 
-  // Menggunakan useEffect untuk mengatur loading menjadi false setelah data selesai dimuat
   useEffect(() => {
-    setLoading(false); // Set loading ke false setelah data selesai dimuat
+    setLoading(false);
   }, []);
 
-  // ProtectedRoute untuk menangani route yang membutuhkan autentikasi
   const ProtectedRoute = ({ children }) => {
     if (authLoading || loading) {
-      // Tampilkan loading screen jika data masih dimuat
       return <Loading />;
     }
-
     if (!user) {
       return <Navigate to="/login" />;
     }
-
     return children;
   };
 
@@ -43,13 +38,9 @@ const App = () => {
       <ThemeProvider>
         <Router>
           <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-            {/* Navbar hanya ditampilkan jika pengguna sudah login */}
             {user && <Navbar />}
             <Routes>
-              {/* Public Route */}
               <Route path="/login" element={<Login />} />
-
-              {/* Protected Routes */}
               <Route
                 path="/"
                 element={
@@ -66,8 +57,6 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-
-              {/* Not Found Route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

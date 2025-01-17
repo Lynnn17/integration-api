@@ -6,15 +6,16 @@ import "react-status-alert/dist/status-alert.css";
 import ItemForm from "../components/ItemForm";
 import ItemTable from "../components/ItemTable";
 import Pagination from "../components/Pagination";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const Dashboard = () => {
   const [items, setItems] = useState([]);
-  const [newItem, setNewItem] = useState({ name: "", description: "" });
-  const [editItem, setEditItem] = useState(null);
-  const [search, setSearch] = useState(""); // Single search state for both name and division
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [totalItems, setTotalItems] = useState(0);
+  const [editItem, setEditItem] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,36 +26,65 @@ const Dashboard = () => {
     { label: "Phone", key: "phone" },
     { label: "Position", key: "position" },
     { label: "Name Division", key: "division.name" },
-    { label: "Actions", key: "actions" },
   ];
 
-  // Fetch items from API
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await axios.get(
-          `${
-            import.meta.env.VITE_API_URL
-          }/api/employees?name=${search}&page=${currentPage}&limit=${itemsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const actions = [
+    {
+      label: "Edit",
+      className: "bg-blue-500 text-white mr-2",
+      onClick: (item) => {
+        handelEditItem(item);
+      },
+    },
+    {
+      label: "Delete",
+      className: "bg-red-500 text-white",
+      onClick: (item) => {
+        confirmAlert({
+          title: "Confirm to submit",
+          message: "Are you sure to do this.",
+          buttons: [
+            {
+              label: "Yes",
+              onClick: () => {
+                handleDeleteItem(item.id);
+              },
             },
-          }
-        );
-        console.log(response.data);
-        setItems(response.data.data.employees);
-        setTotalItems(response.data.pagination.total);
-      } catch (error) {
-        console.error("Error fetching items:", error);
-        StatusAlertService.showError("Failed to load items. Please try again.");
-      }
-    };
+            {
+              label: "No",
+            },
+          ],
+        });
+      },
+    },
+  ];
 
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/employees?name=${search}&page=${currentPage}&limit=${itemsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setItems(response.data.data.employees);
+      const { total, per_page } = response.data.pagination;
+
+      setTotalItems(total);
+      setItemsPerPage(per_page);
+    } catch (error) {
+      StatusAlertService.showError("Failed to load items. Please try again.");
+    }
+  };
+
+  useEffect(() => {
     fetchItems();
   }, [search, currentPage, itemsPerPage]);
 
-  // Update search and page from URL params
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const page = parseInt(params.get("page")) || 1;
@@ -64,50 +94,8 @@ const Dashboard = () => {
     setSearch(searchQuery);
   }, [location.search]);
 
-  const handleAddItem = async () => {
-    if (!newItem.name || !newItem.description) return;
-
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/employees`,
-        newItem,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setNewItem({ name: "", description: "" });
-      StatusAlertService.showSuccess("Item added!");
-      fetchItems();
-    } catch (error) {
-      StatusAlertService.showError("Failed to add item.");
-    }
-  };
-
-  const handleEditItem = async (id) => {
-    if (!editItem) return;
-
-    try {
-      await axios.put(
-        `https://magang.karyavisual.com/api/employees/${id}`,
-        {
-          name: editItem.name,
-          description: editItem.description,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      setEditItem(null);
-      StatusAlertService.showSuccess("Item updated!");
-      fetchItems();
-    } catch (error) {
-      StatusAlertService.showError("Failed to update item.");
-    }
+  const handelEditItem = (item) => {
+    setEditItem(item);
   };
 
   const handleDeleteItem = async (id) => {
@@ -124,7 +112,6 @@ const Dashboard = () => {
     }
   };
 
-  // Pagination logic
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
@@ -137,7 +124,7 @@ const Dashboard = () => {
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearch(query);
-    setCurrentPage(1); // Reset to page 1 on search change
+    setCurrentPage(1);
     navigate({
       search: `?page=1&search=${query}`,
     });
@@ -147,17 +134,16 @@ const Dashboard = () => {
     <div className="container mx-auto p-4">
       <StatusAlert />
       <h1 className="text-2xl font-semibold mb-6 text-center text-blue-600 dark:text-blue-300">
-        CRUD Data
+        Data Employee
       </h1>
 
-      {/* Item Form */}
       <ItemForm
-        newItem={newItem}
-        setNewItem={setNewItem}
-        handleAddItem={handleAddItem}
+        handleAddItem={fetchItems}
+        editItem={editItem}
+        setEditItem={setEditItem}
+        handleCancel={() => setEditItem(null)}
       />
 
-      {/* Search Bar */}
       <div className="mb-6 flex justify-end">
         <div className="relative border border-gray-300 rounded-md w-full md:w-1/4">
           <svg
@@ -184,15 +170,14 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Item Table */}
       <ItemTable
         currentItems={items}
         columns={columns}
-        handleEditItem={handleEditItem}
         handleDeleteItem={handleDeleteItem}
+        actions={actions}
       />
 
-      {/* Pagination */}
+   
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

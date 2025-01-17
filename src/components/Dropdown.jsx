@@ -1,13 +1,13 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const Dropdown = () => {
   const { logout } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const EditUser = () => {
     navigate("/edit-user");
@@ -24,7 +24,16 @@ const Dropdown = () => {
     setIsOpen(false);
   };
 
-  const hadleLogout = () => {
+  const hadleLogout = async () => {
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
     logout();
     setIsOpen(false);
     window.location.reload();

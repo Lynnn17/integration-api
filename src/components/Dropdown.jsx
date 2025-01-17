@@ -19,6 +19,11 @@ const Dropdown = () => {
     setIsOpen(false);
   };
 
+  const Devisi = () => {
+    navigate("/devisi");
+    setIsOpen(false);
+  };
+
   const hadleLogout = () => {
     logout();
     setIsOpen(false);
@@ -37,22 +42,27 @@ const Dropdown = () => {
         Menu
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow">
-          {location.pathname !== "/edit-user" ? (
-            <button
-              onClick={EditUser}
-              className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <button
-              onClick={Dashboard}
-              className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-            >
-              Dashboard
-            </button>
-          )}
+        <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow z-20">
+          <button
+            onClick={EditUser}
+            className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+          >
+            Edit Profile
+          </button>
+
+          <button
+            onClick={Dashboard}
+            className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+          >
+            Dashboard
+          </button>
+
+          <button
+            onClick={Devisi}
+            className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+          >
+            Devisi
+          </button>
           <button
             onClick={hadleLogout}
             className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"

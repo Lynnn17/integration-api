@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import { AuthContext } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Loading from "./components/Loading.jsx";
+import Devisi from "./pages/Devisi.jsx";
 
 const App = () => {
   const { user, loading: authLoading } = useContext(AuthContext);
@@ -45,6 +46,14 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={"/devisi"}
+              element={
+                <ProtectedRoute>
+                  <Devisi />
                 </ProtectedRoute>
               }
             />

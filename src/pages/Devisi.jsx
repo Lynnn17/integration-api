@@ -71,8 +71,8 @@ const Devisi = () => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const columns = [
-    { key: "id", title: "Id" },
-    { key: "name", title: "Name" },
+    { key: "id", label: "Id" },
+    { key: "name", label: "Name" },
   ];
 
   useEffect(() => {

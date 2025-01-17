@@ -11,22 +11,20 @@ const Dashboard = () => {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({ name: "", description: "" });
   const [editItem, setEditItem] = useState(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(""); // Single search state for both name and division
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page if needed
-  const [totalItems, setTotalItems] = useState(0); // To track total number of items
+  const [itemsPerPage] = useState(5);
+  const [totalItems, setTotalItems] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Define columns for the ItemTable
   const columns = [
     { label: "Name", key: "name" },
     { label: "Image", key: "image" },
-    { label: "Name", key: "name" },
     { label: "Phone", key: "phone" },
     { label: "Position", key: "position" },
-    { label: "Name Devision", key: "devision.updated_at" },
+    { label: "Name Division", key: "division.name" },
     { label: "Actions", key: "actions" },
   ];
 
@@ -46,7 +44,7 @@ const Dashboard = () => {
         );
         console.log(response.data);
         setItems(response.data.data.employees);
-        setTotalItems(response.data.pagination.total); // Set total items for pagination
+        setTotalItems(response.data.pagination.total);
       } catch (error) {
         console.error("Error fetching items:", error);
         StatusAlertService.showError("Failed to load items. Please try again.");
@@ -71,7 +69,7 @@ const Dashboard = () => {
 
     try {
       await axios.post(
-        "https://magang.karyavisual.com/api/employees",
+        `${import.meta.env.VITE_API_URL}/api/employees`,
         newItem,
         {
           headers: {
@@ -81,7 +79,7 @@ const Dashboard = () => {
       );
       setNewItem({ name: "", description: "" });
       StatusAlertService.showSuccess("Item added!");
-      fetchItems(); // Refetch items after adding
+      fetchItems();
     } catch (error) {
       StatusAlertService.showError("Failed to add item.");
     }
@@ -106,7 +104,7 @@ const Dashboard = () => {
 
       setEditItem(null);
       StatusAlertService.showSuccess("Item updated!");
-      fetchItems(); // Refetch items after update
+      fetchItems();
     } catch (error) {
       StatusAlertService.showError("Failed to update item.");
     }
@@ -120,7 +118,7 @@ const Dashboard = () => {
         },
       });
       StatusAlertService.showSuccess("Item deleted!");
-      fetchItems(); // Refetch items after delete
+      fetchItems();
     } catch (error) {
       StatusAlertService.showError("Failed to delete item.");
     }
@@ -181,7 +179,7 @@ const Dashboard = () => {
             value={search}
             onChange={handleSearchChange}
             className="pl-10 p-2 rounded-md w-full border border-gray-300"
-            placeholder="Search items..."
+            placeholder="Search Name..."
           />
         </div>
       </div>
@@ -189,7 +187,7 @@ const Dashboard = () => {
       {/* Item Table */}
       <ItemTable
         currentItems={items}
-        columns={columns} // Pass the columns to ItemTable
+        columns={columns}
         handleEditItem={handleEditItem}
         handleDeleteItem={handleDeleteItem}
       />

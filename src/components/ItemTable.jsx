@@ -1,98 +1,83 @@
-const ItemTable = ({
-  currentItems,
-  editItem,
-  setEditItem,
-  handleEditItem,
-  handleDeleteItem,
-}) => {
-  const confirmDelete = (id) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this item?"
-    );
-    if (isConfirmed) {
-      handleDeleteItem(id);
+const ItemTable = ({ currentItems, columns, actions }) => {
+  const renderColumn = (item, column) => {
+    if (typeof column.render === "function") {
+      return column.render(item);
     }
+
+    if (column.key === "image") {
+      // Menampilkan gambar
+      return (
+        <img
+          src={`${import.meta.env.VITE_API_URL}/public/storage/${
+            item[column.key]
+          }`} // Gabungkan URL dasar dengan path gambar
+          alt={item.name}
+          className="w-16 h-16 object-cover rounded-full" // Styling gambar
+        />
+      );
+    }
+
+    // Menangani kolom lainnya, termasuk yang memiliki properti nested seperti "division.name"
+    return column.key.split(".").reduce((acc, part) => acc && acc[part], item);
   };
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-md">
+      <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
         <thead>
           <tr className="bg-gray-100">
-            <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">
-              Name
-            </th>
-            <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">
-              Description
-            </th>
-            <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">
-              Actions
-            </th>
+            {columns.map((column) => (
+              <th
+                key={column.key}
+                className="py-3 px-4 text-left text-sm font-medium text-gray-700"
+              >
+                {column.label}
+              </th>
+            ))}
+            {actions && (
+              <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">
+                Actions
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
-          {currentItems.map((item) => (
-            <tr key={item.id} className="border-b">
-              <td className="py-3 px-4 text-sm text-gray-800">
-                {editItem?.id === item.id ? (
-                  <input
-                    type="text"
-                    required
-                    value={editItem.name}
-                    onChange={(e) =>
-                      setEditItem({ ...editItem, name: e.target.value })
-                    }
-                    className="border p-2 rounded-md"
-                  />
-                ) : (
-                  item.name
-                )}
-              </td>
-              <td className="py-3 px-4 text-sm text-gray-800">
-                {editItem?.id === item.id ? (
-                  <input
-                    type="text"
-                    required
-                    value={editItem.description}
-                    onChange={(e) =>
-                      setEditItem({
-                        ...editItem,
-                        description: e.target.value,
-                      })
-                    }
-                    className="border p-2 rounded-md"
-                  />
-                ) : (
-                  item.description
-                )}
-              </td>
-              <td className="py-3 px-4 text-sm">
-                {editItem?.id === item.id ? (
-                  <button
-                    onClick={() => handleEditItem(item.id)}
-                    className="bg-green-500 text-white p-2 rounded-md"
+          {currentItems.length > 0 ? (
+            currentItems.map((item) => (
+              <tr key={item.id} className="border-b">
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className="py-3 px-4 text-sm text-gray-800"
                   >
-                    Save
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setEditItem(item)}
-                      className="bg-yellow-500 text-white p-2 rounded-md mr-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => confirmDelete(item.id)} // Trigger confirmDelete function
-                      className="bg-red-500 text-white p-2 rounded-md"
-                    >
-                      Delete
-                    </button>
-                  </>
+                    {renderColumn(item, column)}
+                  </td>
+                ))}
+                {actions && (
+                  <td className="py-3 px-4 text-sm text-gray-800">
+                    {actions.map((action, index) => (
+                      <button
+                        key={index}
+                        onClick={() => action.onClick(item)}
+                        className={`p-2 rounded-md ${action.className}`}
+                      >
+                        {action.label}
+                      </button>
+                    ))}
+                  </td>
                 )}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={columns.length + (actions ? 1 : 0)}
+                className="py-3 px-4 text-center text-sm text-gray-500"
+              >
+                No data available.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

@@ -100,11 +100,14 @@ const Dashboard = () => {
 
   const handleDeleteItem = async (id) => {
     try {
-      await axios.delete(`https://magang.karyavisual.com/api/employees/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/employees/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       StatusAlertService.showSuccess("Item deleted!");
       fetchItems();
     } catch (error) {
@@ -177,7 +180,6 @@ const Dashboard = () => {
         actions={actions}
       />
 
-   
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

@@ -19,7 +19,9 @@ const Devisi = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/divisions?name=${search}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/divisions?name=${search}&page=${currentPage}&limit=${itemsPerPage}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
